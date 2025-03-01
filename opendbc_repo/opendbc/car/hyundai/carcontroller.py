@@ -137,7 +137,7 @@ class CarController(CarControllerBase):
     #self.driver_applied_torque_reducer = max(30, min(150, self.driver_applied_torque_reducer + (-1 if abs(CS.out.steeringTorque) > 200 else 1)))
     #self.lkas_max_torque = int(round(max_torque * ego_weight * (self.driver_applied_torque_reducer / 150)))
     MAX_TORQUE = self.angle_max_torque
-    ego_weight = np.interp(CS.out.vEgo, [0, 5, 10, 20], [0.2, 0.3, 0.5, 1.0])
+    ego_weight = np.interp(CS.out.vEgo, [0, 5, 10, 20], [0.1, 0.3, 0.5, 0.7])
     if abs(CS.out.steeringTorque) > 700:
       self.driver_applied_torque_reducer -= 1
       if self.driver_applied_torque_reducer < 30:
@@ -268,7 +268,7 @@ class CarController(CarControllerBase):
 
       if self.frame % 2 == 0 and self.CP.openpilotLongitudinalControl and camera_scc:
         self.hyundai_jerk.make_jerk(self.CP, CS, accel, actuators, hud_control)
-        jerk = 3.0 if actuators.longControlState == LongCtrlState.pid else 1.0
+        jerk = 1.5 if actuators.longControlState == LongCtrlState.pid else 1.0
         use_fca = self.CP.flags & HyundaiFlags.USE_FCA.value
         can_sends.extend(hyundaican.create_acc_commands_scc(self.packer, CC.enabled, accel, self.hyundai_jerk, int(self.frame / 2),
                                                         hud_control, set_speed_in_units, stopping,
@@ -276,7 +276,7 @@ class CarController(CarControllerBase):
       elif self.frame % 2 == 0 and self.CP.openpilotLongitudinalControl:
         self.hyundai_jerk.make_jerk(self.CP, CS, accel, actuators, hud_control)
         # TODO: unclear if this is needed
-        jerk = 3.0 if actuators.longControlState == LongCtrlState.pid else 1.0
+        jerk = 1.5 if actuators.longControlState == LongCtrlState.pid else 1.0
         use_fca = self.CP.flags & HyundaiFlags.USE_FCA.value
         can_sends.extend(hyundaican.create_acc_commands(self.packer, CC.enabled, accel, self.hyundai_jerk, int(self.frame / 2),
                                                         hud_control, set_speed_in_units, stopping,
